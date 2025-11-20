@@ -27,7 +27,7 @@ def cli():
 @cli.command()
 @click.argument('data_file', type=click.Path(exists=True))
 @click.option('--business-type', '-b', type=click.Choice([
-    'saas', 'ecommerce', 'marketplace', 'freemium', 'enterprise', 'usage_based', 'hybrid'
+    'saas', 'ecommerce', 'marketplace', 'freemium', 'enterprise', 'usage_based', 'hybrid', 'homebuilder'
 ]), help='Type of business model')
 @click.option('--periods', '-p', default=12, help='Number of periods to forecast')
 @click.option('--models', '-m', multiple=True, help='Models to use (can specify multiple)')
@@ -209,7 +209,7 @@ def list_models():
 
 @cli.command()
 @click.option('--business-type', '-b', type=click.Choice([
-    'saas', 'ecommerce', 'marketplace', 'freemium', 'enterprise', 'usage_based', 'hybrid'
+    'saas', 'ecommerce', 'marketplace', 'freemium', 'enterprise', 'usage_based', 'hybrid', 'homebuilder'
 ]), help='Type of business model')
 def show_template(business_type):
     """
@@ -228,6 +228,7 @@ def show_template(business_type):
         click.echo("  • enterprise")
         click.echo("  • usage_based")
         click.echo("  • hybrid")
+        click.echo("  • homebuilder")
         return
 
     try:

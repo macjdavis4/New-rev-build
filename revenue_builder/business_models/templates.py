@@ -34,6 +34,7 @@ class BusinessModelTemplates:
             'enterprise': BusinessModelTemplates.enterprise_b2b_template(),
             'usage_based': BusinessModelTemplates.usage_based_template(),
             'hybrid': BusinessModelTemplates.hybrid_template(),
+            'homebuilder': BusinessModelTemplates.homebuilder_template(),
         }
 
         if business_type not in templates:
@@ -402,6 +403,152 @@ class BusinessModelTemplates:
         }
 
     @staticmethod
+    def homebuilder_template() -> Dict[str, Any]:
+        """
+        Homebuilder business model template.
+
+        For residential construction companies like Lennar, DR Horton, Toll Brothers.
+        Key metrics: Closings, ASP, Backlog, Absorption Rate, Gross Margin
+        """
+        return {
+            'business_type': 'homebuilder',
+            'revenue_model': 'home_closings',
+            'key_metrics': [
+                # Volume Metrics
+                'closings',  # Homes closed (delivered)
+                'net_orders',  # New contracts signed
+                'cancellations',  # Contract cancellations
+                'cancellation_rate',  # Cancellation rate %
+                'backlog',  # Homes under contract (not yet closed)
+                'backlog_value',  # Total value of backlog ($)
+                'starts',  # New home construction starts
+                'specs',  # Spec homes (started before contract)
+                'spec_ratio',  # Spec homes as % of inventory
+
+                # Pricing Metrics
+                'asp',  # Average Selling Price
+                'base_price',  # Base home price
+                'options_revenue',  # Revenue from upgrades/options
+                'incentives',  # Buyer incentives and concessions
+                'net_asp',  # ASP after incentives
+
+                # Revenue Metrics
+                'home_sales_revenue',  # Revenue from home closings
+                'land_sales_revenue',  # Revenue from land/lot sales
+                'total_revenue',  # Total revenue
+                'revenue_per_closing',  # Average revenue per closing
+
+                # Profitability Metrics
+                'gross_margin',  # Gross profit margin %
+                'gross_profit_per_closing',  # Average gross profit per home
+                'cogs_per_closing',  # Cost of goods sold per home
+                'land_cost_per_lot',  # Average land cost per lot
+                'construction_cost_per_home',  # Direct construction costs
+
+                # Operational Metrics
+                'active_communities',  # Number of active selling communities
+                'avg_communities',  # Average selling communities
+                'closings_per_community',  # Closings per community
+                'absorption_rate',  # Monthly sales pace per community
+                'cycle_time',  # Days from start to close
+                'inventory_months',  # Months of supply
+
+                # Land/Lot Metrics
+                'lots_owned',  # Owned lots
+                'lots_controlled',  # Optioned lots
+                'total_lots',  # Total lot position
+                'years_supply',  # Years of lot supply
+                'lot_acquisition_cost',  # Cost to acquire new lots
+
+                # Market/External Factors
+                'mortgage_rate',  # Average 30-year mortgage rate
+                'interest_rate_impact',  # Impact of rate changes
+                'market_home_prices',  # Local market prices
+                'competitor_incentives',  # Competitor incentive levels
+                'buyer_traffic',  # Prospective buyer visits
+
+                # Financial Metrics
+                'revenue_per_community',  # Revenue per active community
+                'return_on_inventory',  # Return on inventory invested
+                'inventory_turnover',  # Inventory turns per year
+                'days_to_sell',  # Average days to sell from listing
+            ],
+            'required_columns': [
+                'date',
+                'closings',  # Number of homes closed
+                'asp',  # Average selling price
+                'net_orders',  # Net new orders
+                'backlog',  # Backlog units
+                'starts',  # New starts
+                'active_communities',  # Active selling communities
+                'gross_margin',  # Gross margin %
+            ],
+            'optional_columns': [
+                'incentives',  # Incentive amounts or %
+                'cancellation_rate',  # Cancellation rate
+                'mortgage_rate',  # Current mortgage rates
+                'options_revenue',  # Upgrade/options revenue
+                'specs',  # Spec inventory
+                'lots_owned',  # Owned lot inventory
+                'cycle_time',  # Build cycle time in days
+                'land_cost_per_lot',  # Land cost per lot
+                'construction_cost_per_home',  # Direct costs
+            ],
+            'recommended_models': [
+                'unit_economics',  # Closings × ASP
+                'customer_based',  # Orders → Backlog → Closings funnel
+                'prophet',  # Seasonal patterns
+                'xgboost',  # Factor-based forecasting
+                'ensemble',  # Combine multiple approaches
+            ],
+            'forecast_components': {
+                'closings': 'Number of home deliveries',
+                'asp': 'Average selling price',
+                'absorption': 'Sales pace per community',
+                'communities': 'Active community count',
+                'backlog_conversion': 'Backlog to closings',
+                'incentives': 'Incentive levels',
+                'margin': 'Gross margin percentage',
+            },
+            'seasonality': 'high',  # Strong seasonal patterns in homebuilding
+            'growth_drivers': [
+                'community_openings',  # New community additions
+                'absorption_rate_improvement',  # Faster sales pace
+                'asp_growth',  # Price appreciation
+                'spec_strategy',  # Spec vs pre-sold mix
+                'incentive_optimization',  # Managing incentives
+                'cycle_time_reduction',  # Faster builds
+                'lot_acquisition',  # Land pipeline
+                'market_share_gain',  # Taking share from competitors
+                'margin_expansion',  # Cost efficiency
+            ],
+            'external_factors': [
+                'mortgage_rates',  # 30-year mortgage rates
+                'employment',  # Local employment levels
+                'household_formation',  # Demographics
+                'existing_home_inventory',  # Competition from resale market
+                'building_material_costs',  # Input cost inflation
+                'labor_availability',  # Construction labor supply
+                'permit_approval_time',  # Regulatory timeline
+                'land_availability',  # Developable land supply
+            ],
+            'key_ratios': [
+                'backlog_to_closings',  # Backlog coverage (months)
+                'net_orders_to_closings',  # Order-to-closing ratio
+                'specs_to_total_starts',  # Spec strategy
+                'incentives_to_asp',  # Incentive level as % of price
+                'closings_to_starts',  # Build-to-close conversion
+                'lots_to_annual_closings',  # Land supply (years)
+            ],
+            'forecast_methodology': {
+                'bottom_up': 'Communities × Absorption Rate × ASP',
+                'backlog_based': 'Existing Backlog + New Orders - Cancellations',
+                'capacity_based': 'Active Communities × Capacity per Community',
+                'cohort_based': 'Track cohorts from order to closing',
+            }
+        }
+
+    @staticmethod
     def generate_sample_data(
         business_type: str,
         periods: int = 36,
@@ -428,6 +575,8 @@ class BusinessModelTemplates:
             data = BusinessModelTemplates._generate_ecommerce_data(dates)
         elif business_type == 'marketplace':
             data = BusinessModelTemplates._generate_marketplace_data(dates)
+        elif business_type == 'homebuilder':
+            data = BusinessModelTemplates._generate_homebuilder_data(dates)
         else:
             # Generic data
             data = pd.DataFrame({
@@ -529,6 +678,135 @@ class BusinessModelTemplates:
                 'buyers': buyers,
                 'sellers': sellers,
                 'take_rate': take_rate,
+            })
+
+        return pd.DataFrame(data)
+
+    @staticmethod
+    def _generate_homebuilder_data(dates: pd.DatetimeIndex) -> pd.DataFrame:
+        """Generate sample homebuilder data."""
+        periods = len(dates)
+
+        # Initialize baseline values
+        base_closings_per_community = 3.5  # Monthly absorption rate
+        base_communities = 25
+        base_asp = 425000
+        base_mortgage_rate = 3.5
+        base_incentive_pct = 0.02
+
+        data = []
+        backlog = 250  # Starting backlog
+
+        for i, date in enumerate(dates):
+            # Seasonal patterns (stronger in spring/summer)
+            month = date.month
+            seasonal_factor = 1.0 + 0.25 * np.sin(2 * np.pi * (month - 3) / 12)
+
+            # Simulate mortgage rate changes (started low, increased 2022-2023)
+            if i < 12:  # 2022 - low rates
+                mortgage_rate = base_mortgage_rate + np.random.normal(0, 0.1)
+            elif i < 24:  # 2023 - rising rates
+                mortgage_rate = base_mortgage_rate + 3.0 + np.random.normal(0, 0.2)
+            else:  # 2024+ - elevated rates
+                mortgage_rate = base_mortgage_rate + 3.5 + np.random.normal(0, 0.15)
+
+            # Interest rate impact on demand (higher rates = lower demand)
+            rate_impact = max(0.5, 1.0 - (mortgage_rate - base_mortgage_rate) * 0.08)
+
+            # Active communities (gradual expansion)
+            active_communities = int(base_communities * (1 + i * 0.015))
+
+            # Absorption rate (sales per community per month)
+            base_absorption = base_closings_per_community * seasonal_factor * rate_impact
+            absorption_rate = max(1.5, base_absorption + np.random.normal(0, 0.3))
+
+            # Net orders (new contracts)
+            gross_orders = int(active_communities * absorption_rate)
+            cancellation_rate = 0.08 + (mortgage_rate - base_mortgage_rate) * 0.02  # Higher rates = more cancellations
+            cancellations = int(gross_orders * cancellation_rate)
+            net_orders = gross_orders - cancellations
+
+            # Update backlog
+            backlog = backlog + net_orders
+
+            # Closings (deliveries from backlog)
+            # Assume 4-6 month cycle time
+            closings = int(backlog * 0.20)  # 20% of backlog closes each month
+            backlog = backlog - closings
+
+            # Starts (new construction begins)
+            # Balance between pre-sold and specs
+            spec_ratio = 0.30  # 30% specs
+            starts = int(closings * 1.1)  # Start slightly more than closing
+            specs = int(starts * spec_ratio)
+
+            # Pricing
+            # ASP grows but slows with higher rates
+            asp_growth = 0.003 * (1.0 - (mortgage_rate - base_mortgage_rate) * 0.05)
+            asp = base_asp * (1 + asp_growth) ** i
+
+            # Incentives increase with higher rates
+            incentive_pct = base_incentive_pct + (mortgage_rate - base_mortgage_rate) * 0.005
+            incentives = asp * incentive_pct
+            net_asp = asp - incentives
+
+            # Revenue
+            home_sales_revenue = closings * net_asp
+
+            # Options/upgrades revenue (15% of base)
+            options_revenue = closings * (asp * 0.15)
+
+            total_revenue = home_sales_revenue + options_revenue
+
+            # Costs and margins
+            # Base costs
+            land_cost_per_lot = asp * 0.20  # Land typically 20% of price
+            construction_cost = asp * 0.50  # Construction ~50% of price
+            total_cost = land_cost_per_lot + construction_cost
+
+            # Gross margin (compressed by incentives and rising costs)
+            gross_profit = net_asp - total_cost
+            gross_margin = gross_profit / net_asp if net_asp > 0 else 0.15
+            gross_margin = max(0.10, min(0.25, gross_margin))  # Cap between 10-25%
+
+            # Lot inventory
+            lots_owned = int(active_communities * 50)  # ~50 lots per community
+            years_supply = lots_owned / (closings * 12) if closings > 0 else 5.0
+
+            # Backlog value
+            backlog_value = backlog * asp
+
+            data.append({
+                'date': date,
+                'closings': closings,
+                'net_orders': net_orders,
+                'gross_orders': gross_orders,
+                'cancellations': cancellations,
+                'cancellation_rate': cancellation_rate,
+                'backlog': backlog,
+                'backlog_value': backlog_value,
+                'starts': starts,
+                'specs': specs,
+                'spec_ratio': spec_ratio,
+                'asp': asp,
+                'incentives': incentives,
+                'incentive_pct': incentive_pct,
+                'net_asp': net_asp,
+                'options_revenue': options_revenue,
+                'home_sales_revenue': home_sales_revenue,
+                'total_revenue': total_revenue,
+                'revenue': total_revenue,  # For compatibility
+                'active_communities': active_communities,
+                'absorption_rate': absorption_rate,
+                'closings_per_community': closings / active_communities if active_communities > 0 else 0,
+                'gross_margin': gross_margin,
+                'gross_profit_per_closing': gross_profit,
+                'land_cost_per_lot': land_cost_per_lot,
+                'construction_cost_per_home': construction_cost,
+                'lots_owned': lots_owned,
+                'years_supply': years_supply,
+                'mortgage_rate': mortgage_rate,
+                'cycle_time': 150,  # ~5 months average
             })
 
         return pd.DataFrame(data)
